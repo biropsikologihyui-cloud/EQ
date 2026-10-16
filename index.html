@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuesioner Evaluasi Diri & Kecerdasan Emosional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-clipboard-question text-2xl text-amber-300"></i>
+                <h1 class="font-bold text-lg md:text-xl tracking-tight">Kuesioner Evaluasi Diri</h1>
+            </div>
+            <div id="user-nav-info" class="hidden flex items-center space-x-4">
+                <span class="text-sm bg-indigo-800 px-3 py-1 rounded-full border border-indigo-500/30">
+                    <i class="fa-solid fa-user text-xs mr-1 text-indigo-300"></i>
+                    <span id="nav-username" class="font-medium">User</span>
+                </span>
+                <button onclick="logout()" class="text-xs bg-red-500 hover:bg-red-600 text-white font-semibold px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1">
+                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-6 w-full flex-grow">
+
+        <section id="login-view" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-slate-200 max-w-md mx-auto my-8">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                    <i class="fa-solid fa-user-lock text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">Masuk Kuesioner</h2>
+                <p class="text-sm text-slate-500 mt-1">Isi identitas diri Anda untuk memulai pengisian survey</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nama Lengkap</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <input type="text" id="input-fullname" required placeholder="Contoh: Budi Santoso" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-sm transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">NIM / ID Anggota / Email</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-id-card"></i>
+                        </span>
+                        <input type="text" id="input-userid" required placeholder="Contoh: 202600123" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-sm transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Kategori / Unit Kerja</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-building"></i>
+                        </span>
+                        <select id="input-category" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-sm transition">
+                            <option value="Umum">Umum</option>
+                            <option value="Mahasiswa">Mahasiswa</option>
+                            <option value="Karyawan">Karyawan / Staf</option>
+                            <option value="Pengajar/Dosen">Pengajar / Dosen</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md transition duration-200 hover:shadow-lg flex items-center justify-center gap-2 mt-6">
+                    <span>Mulai Kuesioner</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </form>
+        </section>
+
+        <section id="questionnaire-view" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-lg font-bold text-indigo-900 flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-circle-info text-indigo-600"></i> Petunjuk Pengisian
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed mb-3">
+                    Berikut adalah pertanyaan yang berkaitan dengan situasi yang mungkin Anda temui dalam kehidupan sehari-hari.
+                    Bacalah setiap pernyataan dengan cermat dan pilih opsi penilaian dari skala <strong>1 sampai 5</strong> yang paling mencerminkan diri Anda.
+                </p>
+                <div class="grid grid-cols-5 gap-1 md:gap-2 text-center text-xs font-medium pt-2 border-t border-slate-100">
+                    <div class="p-1.5 rounded bg-red-50 text-red-700 border border-red-100"><span class="font-bold">1</span><br><span class="text-[10px] sm:text-xs">Sangat Tidak Setuju</span></div>
+                    <div class="p-1.5 rounded bg-orange-50 text-orange-700 border border-orange-100"><span class="font-bold">2</span><br><span class="text-[10px] sm:text-xs">Tidak Setuju</span></div>
+                    <div class="p-1.5 rounded bg-amber-50 text-amber-700 border border-amber-100"><span class="font-bold">3</span><br><span class="text-[10px] sm:text-xs">Netral</span></div>
+                    <div class="p-1.5 rounded bg-blue-50 text-blue-700 border border-blue-100"><span class="font-bold">4</span><br><span class="text-[10px] sm:text-xs">Setuju</span></div>
+                    <div class="p-1.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-100"><span class="font-bold">5</span><br><span class="text-[10px] sm:text-xs">Sangat Setuju</span></div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 sticky top-16 z-40">
+                <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1.5">
+                    <span>Kemajuan Pengisian: <span id="answered-count" class="text-indigo-600 font-bold">0</span> / <span id="total-count">33</span></span>
+                    <span id="progress-percent" class="text-indigo-600 font-bold">0%</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                    <div id="progress-bar-fill" class="bg-indigo-600 h-full w-0 transition-all duration-300 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Dynamic Question Form -->
+            <form id="quiz-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                <!-- Setting URL Apps Script Google Sheet -->
+                <input type="hidden" id="web-app-url" value="https://script.google.com/macros/s/AKfycbw1x5G9RMb6-LKDGcuJfnUmTRZ576QJr7ne-upPvKca_BofRksGNzx5H0t6_P1iFU9i/exec">
+
+                <div id="questions-container" class="space-y-6">
+                    <!-- Questions injected dynamically by JS -->
+                </div>
+
+                <!-- Submit Button Container -->
+                <div class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 text-center space-y-3">
+                    <p id="validation-msg" class="text-xs text-rose-500 font-medium hidden">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> Harap isi semua pernyataan sebelum mengirimkan kuesioner.
+                    </p>
+                    <button type="submit" id="submit-btn" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2 mx-auto">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Jawaban Kuesioner</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section id="result-view" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-slate-200 max-w-2xl mx-auto my-6 space-y-6 text-center">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner mb-2">
+                <i class="fa-solid fa-circle-check text-4xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800">Terima Kasih!</h2>
+            <p class="text-slate-600 text-sm">Jawaban dan evaluasi diri Anda telah berhasil direkam.</p>
+
+            <!-- Participant Info Summary -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left space-y-2 text-sm max-w-md mx-auto">
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-slate-500">Nama Lengkap:</span>
+                    <span id="result-name" class="font-semibold text-slate-800">-</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-slate-500">ID / NIM:</span>
+                    <span id="result-id" class="font-semibold text-slate-800">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Kategori:</span>
+                    <span id="result-category" class="font-semibold text-slate-800">-</span>
+                </div>
+            </div>
+
+            <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs md:text-sm">
+                <i class="fa-solid fa-envelope-circle-check text-emerald-600 text-lg mr-1"></i>
+                Rincian hasil evaluasi kuesioner Anda telah berhasil terkirim ke email Biro Psikologi (<strong>biropsikologihyui@gmail.com</strong>) untuk diproses lebih lanjut.
+            </div>
+
+            <div class="flex justify-center pt-2">
+                <button onclick="resetForm()" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i> Pengisian Baru
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+        <p>© 2026 Aplikasi Kuesioner Evaluasi Diri.</p>
+    </footer>
+
+    <script>
+        const questionnaireItems = [
+            { id: 1, text: "Saya menerima saran dari orang lain saat memilih barang-barang pribadi saya seperti pakaian, sepatu, perhiasan, dll.", isReverse: true },
+            { id: 2, text: "Saya tidak merasa sakit hati meskipun seseorang mengkritik pilihan saya, yang menurut saya paling cocok untuk diri saya.", isReverse: false },
+            { id: 3, text: "Sering kali saya merasa bingung dengan pilihan-pilihan saya.", isReverse: true },
+            { id: 4, text: "Penilaian diri saya terhadap perilaku saya sendiri selalu benar.", isReverse: false },
+            { id: 5, text: "Suasana hati (mood) saya sangat sering berubah-ubah.", isReverse: false },
+            { id: 6, text: "Saya menjadi emosional dengan cepat.", isReverse: true },
+            { id: 7, text: "Saya tidak pernah memaafkan/membiarkan orang yang membuat saya marah.", isReverse: true },
+            { id: 8, text: "Saya pikir Katarsis (pelepasan/penumpahan emosi) adalah cara terbaik untuk mengendalikan emosi.", isReverse: true },
+            { id: 9, text: "Ketika seseorang mengkritik / meremehkan saya, saya berdebat dengan marah kepada mereka.", isReverse: true },
+            { id: 10, text: "Ketika saya merasa tertekan secara emosional karena pekerjaan, saya membawanya ke rumah, dan begitu pula sebaliknya.", isReverse: true },
+            { id: 11, text: "Ketika saya menerima kabar kegagalan, saya cenderung tetap tenang dan menganalisis pro dan kontranya.", isReverse: false },
+            { id: 12, text: "Saya pikir takdir mengatur kehidupan manusia.", isReverse: true },
+            { id: 13, text: "Ketika saya merasa putus asa, saya menerima saran dan bantuan dari orang lain.", isReverse: true },
+            { id: 14, text: "Saya tidak suka direkomendasikan untuk mendapatkan suatu kebaikan/bantuan khusus.", isReverse: false },
+            { id: 15, text: "Sering kali dalam hidup saya, saya berhasil keluar dari masalah atas usaha sendiri.", isReverse: false },
+            { id: 16, text: "Ketika saya menyelesaikan pekerjaan dengan baik, saya mengharapkan pengakuan dari atasan/rekan kerja.", isReverse: true },
+            { id: 17, text: "Setelah menghadapi kegagalan, sangat sulit bagi saya untuk memulai kembali dari awal.", isReverse: true },
+            { id: 18, text: "Ketika promosi / pengakuan saya tertunda, saya merasa frustrasi dan mempermasalahkannya.", isReverse: true },
+            { id: 19, text: "Ketika saya sedang berbicara dengan orang lain, saya tidak peduli apakah mereka mendengarkan atau tidak.", isReverse: true },
+            { id: 20, text: "Sering kali saya mencoba memahami orang lain dari sudut pandang mereka.", isReverse: false },
+            { id: 21, text: "Dalam sebuah percakapan, ketika saya memahami bahwa orang lain memiliki pandangan yang berbeda, saya mengalihkan pokok diskusi.", isReverse: false },
+            { id: 22, text: "Ketika saya ingin berbicara dengan seseorang, saya selalu memastikan bahwa ia sedang dalam suasana hati yang tepat untuk menerima apa yang saya katakan.", isReverse: false },
+            { id: 23, text: "Saya mengamati orang lain hingga ke detail-detail kecil (bahasa tubuh, nada bicara, suasana hati, dll.).", isReverse: false },
+            { id: 24, text: "Saya menjadi marah ketika orang-orang tidak mendengarkan perkataan saya.", isReverse: true },
+            { id: 25, text: "Saya percaya bahwa hubungan adalah masalah pemahaman dan penerimaan bersama.", isReverse: false },
+            { id: 26, text: "Selama perdebatan sengit di kantor, saya adalah orang pertama yang mendinginkan diri dan mencoba menyelesaikan masalah secara baik-baik.", isReverse: false },
+            { id: 27, text: "Saya percaya bahwa untuk mencapai keunggulan dalam bekerja, hubungan interpersonal lebih penting daripada pengetahuan pekerjaan.", isReverse: false },
+            { id: 28, text: "Dengan memperlakukan orang secara bijaksana (taktful), setiap orang dapat dijadikan teman kita.", isReverse: false },
+            { id: 29, text: "Kecemburuan dan permusuhan tidak dapat dihindari di dunia yang kompetitif ini.", isReverse: true },
+            { id: 30, text: "Sulit bagi saya untuk memulai percakapan dengan orang asing.", isReverse: true },
+            { id: 31, text: "Saya merasa canggung atau ragu-ragu (inhibition) dalam mengekspresikan apresiasi saya kepada orang lain.", isReverse: false },
+            { id: 32, text: "Saya ingin memiliki hubungan yang baik dengan setiap orang yang saya temui.", isReverse: false },
+            { id: 33, text: "Saya pikir hubungan informal dengan rekan kerja adalah suatu keharusan untuk kerja tim yang lebih baik.", isReverse: false }
+        ];
+
+        let currentUser = null;
+        let userAnswers = {};
+
+        const loginView = document.getElementById('login-view');
+        const questionnaireView = document.getElementById('questionnaire-view');
+        const resultView = document.getElementById('result-view');
+        const userNavInfo = document.getElementById('user-nav-info');
+        const navUsername = document.getElementById('nav-username');
+        const questionsContainer = document.getElementById('questions-container');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+        });
+
+        function renderQuestions() {
+            questionsContainer.innerHTML = '';
+
+            questionnaireItems.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 transition hover:border-indigo-300";
+                card.id = `q-card-${item.id}`;
+
+                const scaleLabels = ["Sangat Tidak Setuju", "Tidak Setuju", "Netral", "Setuju", "Sangat Setuju"];
+
+                let scaleOptionsHTML = '';
+                for (let val = 1; val <= 5; val++) {
+                    scaleOptionsHTML += `
+                        <label class="flex flex-col items-center justify-center cursor-pointer group">
+                            <input type="radio" name="q_${item.id}" value="${val}" onchange="handleOptionSelect(${item.id}, ${val})" class="peer hidden">
+                            <div class="w-9 h-9 md:w-11 md:h-11 rounded-full border-2 border-slate-300 flex items-center justify-center font-bold text-slate-600 peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600 group-hover:border-indigo-400 transition shadow-sm text-sm md:text-base">
+                                ${val}
+                            </div>
+                            <span class="text-[10px] text-slate-500 mt-1.5 text-center font-medium hidden sm:block group-hover:text-indigo-600 peer-checked:text-indigo-600 peer-checked:font-bold">
+                                ${scaleLabels[val - 1]}
+                            </span>
+                        </label>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-start space-x-3 mb-4">
+                        <span class="flex-shrink-0 w-7 h-7 bg-slate-100 text-indigo-700 font-bold rounded-lg flex items-center justify-center text-xs border border-slate-200">
+                            ${item.id}
+                        </span>
+                        <p class="text-sm md:text-base font-medium text-slate-800 leading-snug pt-0.5">
+                            ${item.text}
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-5 gap-1 md:gap-4 pt-2 border-t border-slate-100">
+                        ${scaleOptionsHTML}
+                    </div>
+                `;
+
+                questionsContainer.appendChild(card);
+            });
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('input-fullname').value.trim();
+            const userId = document.getElementById('input-userid').value.trim();
+            const category = document.getElementById('input-category').value;
+
+            if (!fullName || !userId) return;
+
+            currentUser = { fullName, userId, category };
+            navUsername.textContent = fullName;
+
+            loginView.classList.add('hidden');
+            userNavInfo.classList.remove('hidden');
+            questionnaireView.classList.remove('hidden');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function logout() {
+            currentUser = null;
+            userAnswers = {};
+            
+            document.getElementById('login-form').reset();
+            document.getElementById('quiz-form').reset();
+            updateProgress();
+
+            userNavInfo.classList.add('hidden');
+            questionnaireView.classList.add('hidden');
+            resultView.classList.add('hidden');
+            loginView.classList.remove('hidden');
+        }
+
+        function handleOptionSelect(questionId, value) {
+            userAnswers[`q_${questionId}`] = value;
+            
+            const card = document.getElementById(`q-card-${questionId}`);
+            if (card) {
+                card.classList.remove('border-rose-400', 'bg-rose-50/20');
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const total = 33;
+            const percent = Math.round((answeredCount / total) * 100);
+
+            document.getElementById('answered-count').textContent = answeredCount;
+            document.getElementById('progress-percent').textContent = `${percent}%`;
+            document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+
+            if (answeredCount === total) {
+                document.getElementById('validation-msg').classList.add('hidden');
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const totalQuestions = 33;
+            const answeredCount = Object.keys(userAnswers).length;
+
+            if (answeredCount < totalQuestions) {
+                document.getElementById('validation-msg').classList.remove('hidden');
+
+                for (let i = 1; i <= totalQuestions; i++) {
+                    if (!userAnswers[`q_${i}`]) {
+                        const card = document.getElementById(`q-card-${i}`);
+                        if (card) {
+                            card.classList.add('border-rose-400', 'bg-rose-50/20');
+                        }
+                    }
+                }
+
+                for (let i = 1; i <= totalQuestions; i++) {
+                    if (!userAnswers[`q_${i}`]) {
+                        const card = document.getElementById(`q-card-${i}`);
+                        if (card) {
+                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            break;
+                        }
+                    }
+                }
+                return;
+            }
+
+            document.getElementById('result-name').textContent = currentUser.fullName;
+            document.getElementById('result-id').textContent = currentUser.userId;
+            document.getElementById('result-category').textContent = currentUser.category;
+
+            const webAppUrl = document.getElementById('web-app-url').value.trim();
+            if (webAppUrl) {
+                const submitBtn = document.getElementById('submit-btn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim Data...`;
+
+                try {
+                    await fetch(webAppUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            userInfo: currentUser,
+                            answers: userAnswers
+                        })
+                    });
+                } catch (err) {
+                    console.error("Gagal mengirim ke Apps Script:", err);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>Kirim Jawaban Kuesioner</span>`;
+                }
+            }
+
+            questionnaireView.classList.add('hidden');
+            resultView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            userAnswers = {};
+            document.getElementById('quiz-form').reset();
+            updateProgress();
+            
+            for (let i = 1; i <= 33; i++) {
+                const card = document.getElementById(`q-card-${i}`);
+                if (card) {
+                    card.classList.remove('border-rose-400', 'bg-rose-50/20');
+                }
+            }
+
+            resultView.classList.add('hidden');
+            questionnaireView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
